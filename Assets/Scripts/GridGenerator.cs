@@ -28,6 +28,10 @@ public class GridGenerator : MonoBehaviour
 
                 var tempPrefab = Instantiate(gridPrefab); //create each cell(grid objects)
 
+                tempPrefab.transform.position = new Vector3(i+1, 1+i, 1+i);
+                
+                //TODO set positions
+                
                 tempGridPrefab.x = i;  // assign each objects index value
                 tempGridPrefab.y = j;
                 
@@ -41,5 +45,8 @@ public class GridGenerator : MonoBehaviour
     {
         public int x; //index values
         public int y;
+        
+        public Transform cellTransform;
+       
     }
 }
