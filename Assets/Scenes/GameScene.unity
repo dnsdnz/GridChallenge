@@ -220,6 +220,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86e47b13778d344b2888b8ad25957578, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cellCount: 3
+  gridPrefab: {fileID: 4230886099234625072, guid: 3c6f081c4e0444f5cb9195f58df5ca68, type: 3}
+  gridPrefabList: []
 --- !u!4 &568036918
 Transform:
   m_ObjectHideFlags: 0
