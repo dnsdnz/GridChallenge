@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4b9721bf-e111-402e-ba23-63168e293e4b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/mono_crash.mem.8611.1.blob" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GridChallenge/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GridChallenge/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/GridGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GridGenerator.cs" afterDir="false" />
     </list>
@@ -95,6 +94,12 @@
       <workItem from="1677071544584" duration="1926000" />
       <workItem from="1677073480572" duration="68000" />
       <workItem from="1677073578552" duration="1541000" />
+      <workItem from="1677087704292" duration="922000" />
+      <workItem from="1677098805465" duration="312000" />
+      <workItem from="1677099388712" duration="19000" />
+      <workItem from="1677099516757" duration="482000" />
+      <workItem from="1677100012941" duration="14000" />
+      <workItem from="1677100090086" duration="95000" />
     </task>
     <servers />
   </component>
