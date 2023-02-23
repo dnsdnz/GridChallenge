@@ -15,13 +15,15 @@ public class GridGenerator : MonoBehaviour
 
     private Camera mainCamera;
 
-    private Vector3 cellSize;
+    private Vector3 cellPoint;
+
     private void Start()
     {
         mainCamera = Camera.main;
         
         CreateGrid(); // create grid at start
     }
+
 
     private void CreateGrid()
     {
@@ -33,16 +35,19 @@ public class GridGenerator : MonoBehaviour
 
                 var tempPrefab = Instantiate(gridPrefab); //create each cell(grid objects)
 
-                //TODO scale and transform should check and add comments
-                tempPrefab.transform.localScale = new Vector3( CalculateScreenSize(cellCount),CalculateScreenSize(cellCount),1);
+                //TODO scale of cells and responsiveness
+                //tempPrefab.transform.localScale ...
 
-                cellSize = mainCamera.ScreenToWorldPoint(new Vector3( ((i + .5f) * mainCamera.pixelWidth/cellCount),  (j + .5f ) * mainCamera.pixelHeight/cellCount, mainCamera.nearClipPlane));
-                
-                tempPrefab.transform.position = new Vector3(cellSize.x, cellSize.y, mainCamera.nearClipPlane + 1f);
+                cellPoint = mainCamera.ScreenToWorldPoint(new Vector3( ((i + .5f) * mainCamera.pixelWidth/cellCount),  
+                    (j + .5f ) * mainCamera.pixelHeight/cellCount, mainCamera.nearClipPlane));
 
-                tempGridPrefab.cellTransform = tempPrefab;
+                //get world position of cells from screen posiiton, set position according to this
                 
-                tempGridPrefab.x = i;  // assign each objects index value
+                tempPrefab.transform.position = new Vector3(cellPoint.x, cellPoint.y, mainCamera.nearClipPlane + 1f);
+
+                tempGridPrefab.cellTransform = tempPrefab; //set posiiton of cell from temp prefab
+                
+                tempGridPrefab.x = i;  //assign each objects index value
                 tempGridPrefab.y = j;
                 
                 gridPrefabList.Add(tempGridPrefab); //add to grid prefabs list
@@ -69,6 +74,5 @@ public class GridGenerator : MonoBehaviour
         public int y;
         
         public Transform cellTransform;
-       
     }
 }
