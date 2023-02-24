@@ -75,6 +75,8 @@ public class GridGenerator : MonoBehaviour
                 XPrefabList.Add(tempXPrefab);
                 
                 CreateXObject();
+                
+                CheckXPattern(); //check in each tap
             }
         }
     }
@@ -161,5 +163,10 @@ public class GridGenerator : MonoBehaviour
         {
             return (cam.pixelWidth / (cellCount*1f));  //return each cell size to set transforms
         }
+    }
+
+    void CheckXPattern()
+    {
+        //TODO remove X
     }
 }
