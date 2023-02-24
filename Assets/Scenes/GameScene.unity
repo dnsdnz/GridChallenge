@@ -200,7 +200,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 568036918}
-  - component: {fileID: 568036917}
+  - component: {fileID: 568036919}
   m_Layer: 0
   m_Name: GridGenerator
   m_TagString: Untagged
@@ -208,21 +208,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &568036917
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 568036916}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86e47b13778d344b2888b8ad25957578, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cellCount: 5
-  gridPrefab: {fileID: 4230886099234625072, guid: 3c6f081c4e0444f5cb9195f58df5ca68, type: 3}
-  gridPrefabList: []
 --- !u!4 &568036918
 Transform:
   m_ObjectHideFlags: 0
@@ -238,6 +223,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &568036919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 568036916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86e47b13778d344b2888b8ad25957578, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cellCount: 4
+  gridPrefab: {fileID: 4230886099234625072, guid: 3c6f081c4e0444f5cb9195f58df5ca68, type: 3}
+  gridPrefabList: []
+  XPrefabList: []
+  clickedArea: {x: 0, y: 0}
+  Listx: []
+  Listy: []
+  listfinalx: []
+  hasSequentialNumbers: 1
 --- !u!1 &758151162
 GameObject:
   m_ObjectHideFlags: 0
@@ -267,6 +273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab83a6c15cda7431b943512139709de5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  xPrefab: {fileID: 691902063680943829, guid: 402d820ee72104722853be3502707eb0, type: 3}
 --- !u!4 &758151164
 Transform:
   m_ObjectHideFlags: 0
