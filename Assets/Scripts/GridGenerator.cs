@@ -7,21 +7,53 @@ public class GridGenerator : MonoBehaviour
     [SerializeField] 
     private int cellCount;  //n count in nxn grid
 
+    private int tempCellCount;
+
     [SerializeField]
     private Transform gridPrefab; //one grid object prefab
 
     [SerializeField] 
     private List<GridPrefab> gridPrefabList; //all created grids
 
+    [SerializeField] 
+    private List<XPrefab> XPrefabList; //all created x objects
+
+    [SerializeField]
+    private Vector2 clickedArea;
+   
+    private void Start()
+    {
+        tempCellCount = cellCount;
+
+        mainCamera = Camera.main;
+        
+        CreateGrid(); // create grid at start
+        
+    }
+
     private Camera mainCamera;
 
     private Vector3 cellPoint;
 
-    private void Start()
+    void OnGUI()
     {
-        mainCamera = Camera.main;
-        
-        CreateGrid(); // create grid at start
+        cellPoint = new Vector3();
+        Event   currentEvent = Event.current;
+        Vector2 mousePos = new Vector2();
+ 
+        mousePos.x = currentEvent.mousePosition.x;
+        mousePos.y = mainCamera.pixelHeight - currentEvent.mousePosition.y;
+
+        cellPoint = mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, mainCamera.nearClipPlane));
+
+        clickedArea.x = (int)(mousePos.x / (mainCamera.pixelWidth / cellCount));
+        clickedArea.y = (int)(mousePos.y / (mainCamera.pixelHeight / cellCount));
+  
+        GUILayout.BeginArea(new Rect(20, 20, 250, 120));
+        GUILayout.Label("Screen pixels: " + mainCamera.pixelWidth + ":" + mainCamera.pixelHeight);
+        GUILayout.Label("Mouse position: " + mousePos);
+        GUILayout.Label("World position: " + cellPoint.ToString("F3"));
+        GUILayout.EndArea();
     }
 
 
@@ -45,7 +77,7 @@ public class GridGenerator : MonoBehaviour
                 
                 tempPrefab.transform.position = new Vector3(cellPoint.x, cellPoint.y, mainCamera.nearClipPlane + 1f);
 
-                tempGridPrefab.cellTransform = tempPrefab; //set posiiton of cell from temp prefab
+                tempGridPrefab.transform = tempPrefab; //set posiiton of cell from temp prefab
                 
                 tempGridPrefab.x = i;  //assign each objects index value
                 tempGridPrefab.y = j;
@@ -73,6 +105,15 @@ public class GridGenerator : MonoBehaviour
         public int x; //index values
         public int y;
         
-        public Transform cellTransform;
+        public Transform transform;
+    }
+
+    [Serializable]
+    public class XPrefab  //X object class
+    {
+        public int x; //index values
+        public int y;
+        
+        public Transform transform;
     }
 }
