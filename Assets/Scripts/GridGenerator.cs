@@ -1,119 +1,165 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
+using Unity.VisualScripting;
+using UnityEngine; 
 
-public class GridGenerator : MonoBehaviour
+public class GridGenerator : MonoBehaviour 
 {
-    [SerializeField] 
-    private int cellCount;  //n count in nxn grid
-
-    private int tempCellCount;
-
-    [SerializeField]
-    private Transform gridPrefab; //one grid object prefab
-
-    [SerializeField] 
-    private List<GridPrefab> gridPrefabList; //all created grids
-
-    [SerializeField] 
-    private List<XPrefab> XPrefabList; //all created x objects
-
-    [SerializeField]
-    private Vector2 clickedArea;
+    [SerializeField] private int cellCount;  //n count in nxn grid
+    
+    private int tmpCellCount;
+    
+    [SerializeField] private Transform gridPrefab; //one grid object prefab
+    
+    [SerializeField] private List<GridPrefab> gridPrefabList = new List<GridPrefab>(); //all created grids
    
-    private void Start()
-    {
-        tempCellCount = cellCount;
+    [SerializeField] private List<XPrefab> XPrefabList = new List<XPrefab>(); //all created x objects
 
-        mainCamera = Camera.main;
-        
+    [SerializeField] private Vector2 clickedArea;
+    
+    private Transform tempxPrefab;
+    
+    [Serializable]
+    public class GridPrefab //grid objects class
+    {
+        public int x;  //index values
+        public int y;
+        public Transform transform;
+    } 
+    
+    [Serializable]
+    public class XPrefab //X object class
+    {
+        public int x;  //index values
+        public int y;
+        public Transform transform;
+    } 
+
+    void Start()
+    {
+        tmpCellCount = cellCount;
+        cam = Camera.main; //set camera
+ 
         CreateGrid(); // create grid at start
-        
+        CreateXObject();  //X prefab reference at start
     }
 
-    private Camera mainCamera;
+    private void Update()
+    {
+        if (cellCount != tmpCellCount)
+        {
+            tmpCellCount = cellCount;
 
-    private Vector3 cellPoint;
+            ClearGrid();
+            CreateGrid();
+        }
+
+        if (Input.GetMouseButtonDown(0)) //creen tapped
+        {
+            Debug.Log("GetMouseButtonDown");
+
+            var gridPrefabObj = gridPrefabList.Find(a => a.x == clickedArea.x && a.y == clickedArea.y);
+            if (gridPrefabObj != null)
+            {
+                tempxPrefab.transform.position = gridPrefabObj.transform.position + Vector3.forward * -.6f;
+
+                XPrefab tempXPrefab = new XPrefab();
+
+                tempXPrefab.x = gridPrefabObj.x;
+                tempXPrefab.y = gridPrefabObj.y;
+                
+                tempXPrefab.transform = tempxPrefab.transform;
+                
+                XPrefabList.Add(tempXPrefab);
+                
+                CreateXObject();
+            }
+        }
+    }
+
+    private Camera cam; 
+    private Vector3 point;
 
     void OnGUI()
     {
-        cellPoint = new Vector3();
+        point = new Vector3();
         Event   currentEvent = Event.current;
         Vector2 mousePos = new Vector2();
  
         mousePos.x = currentEvent.mousePosition.x;
-        mousePos.y = mainCamera.pixelHeight - currentEvent.mousePosition.y;
+        mousePos.y = cam.pixelHeight - currentEvent.mousePosition.y;
 
-        cellPoint = mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, mainCamera.nearClipPlane));
+        point = cam.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, cam.nearClipPlane));
 
-        clickedArea.x = (int)(mousePos.x / (mainCamera.pixelWidth / cellCount));
-        clickedArea.y = (int)(mousePos.y / (mainCamera.pixelHeight / cellCount));
+        clickedArea.x = (int)(mousePos.x / (cam.pixelWidth / cellCount));
+        clickedArea.y = (int)(mousePos.y / (cam.pixelHeight / cellCount));
   
         GUILayout.BeginArea(new Rect(20, 20, 250, 120));
-        GUILayout.Label("Screen pixels: " + mainCamera.pixelWidth + ":" + mainCamera.pixelHeight);
+        GUILayout.Label("Screen pixels: " + cam.pixelWidth + ":" + cam.pixelHeight);
         GUILayout.Label("Mouse position: " + mousePos);
-        GUILayout.Label("World position: " + cellPoint.ToString("F3"));
+        GUILayout.Label("World position: " + point.ToString("F3"));
         GUILayout.EndArea();
     }
 
+    void CreateXObject()
+    { 
+        tempxPrefab = GameObject.Instantiate(GameManager.Instance.xPrefab);
+        //TODO scale and responsiveness 
+        //tempxPrefab.transform.localScale ...
+    }
 
-    private void CreateGrid()
+    void ClearGrid()
+    {
+        foreach (var gridPrefab in gridPrefabList)
+        {
+            Destroy(gridPrefab.transform.gameObject);
+        }
+        gridPrefabList.Clear();
+        
+        CreateGrid();
+    }
+    
+    void CreateGrid()
     {
         for (int i = 0; i < cellCount; i++) //rows
         {
             for (int j = 0; j < cellCount; j++) //columns
             {
                 GridPrefab tempGridPrefab = new GridPrefab(); //temporary grid object for set transforms
-
-                var tempPrefab = Instantiate(gridPrefab); //create each cell(grid objects)
-
+                
+                var tmpPrefab = GameObject.Instantiate(gridPrefab);  
+               
                 //TODO scale of cells and responsiveness
                 //tempPrefab.transform.localScale ...
-
-                cellPoint = mainCamera.ScreenToWorldPoint(new Vector3( ((i + .5f) * mainCamera.pixelWidth/cellCount),  
-                    (j + .5f ) * mainCamera.pixelHeight/cellCount, mainCamera.nearClipPlane));
-
+ 
+                point = cam.ScreenToWorldPoint(new Vector3( ((i + .5f) * cam.pixelWidth/cellCount),  (j + .5f ) * cam.pixelHeight/cellCount, cam.nearClipPlane));
+                
                 //get world position of cells from screen posiiton, set position according to this
-                
-                tempPrefab.transform.position = new Vector3(cellPoint.x, cellPoint.y, mainCamera.nearClipPlane + 1f);
 
-                tempGridPrefab.transform = tempPrefab; //set posiiton of cell from temp prefab
-                
-                tempGridPrefab.x = i;  //assign each objects index value
+                tmpPrefab.transform.position = new Vector3( point.x ,point.y,cam.nearClipPlane+1f);
+
+                tempGridPrefab.transform = tmpPrefab; //set posiiton of cell from temp prefab
+               
+                tempGridPrefab.x = i;   //assign each objects index value
                 tempGridPrefab.y = j;
                 
-                gridPrefabList.Add(tempGridPrefab); //add to grid prefabs list
+                gridPrefabList.Add(tempGridPrefab);  //add to grid prefabs list
+                 
             }
-        }   
+        } 
     }
-
-    private float CalculateScreenSize(int count) //divide screen to given cell count
+ 
+    float CalculateScreenSize(int cellCount) //divide screen to given cell count
     {
-        if (Screen.width > Screen.height) 
+        if (Screen.width > Screen.height)
         {
-            return mainCamera.pixelHeight / (count * 1f); //*1f for float fraction loss
+            return (cam.pixelHeight / (cellCount*1f)); //*1f for float fraction loss
         }
         else
         {
-            return mainCamera.pixelWidth / (count * 1f); //return each cell size to set transforms
+            return (cam.pixelWidth / (cellCount*1f));  //return each cell size to set transforms
         }
-    }
-
-    [Serializable]
-    public class GridPrefab  //grid objects class
-    {
-        public int x; //index values
-        public int y;
-        
-        public Transform transform;
-    }
-
-    [Serializable]
-    public class XPrefab  //X object class
-    {
-        public int x; //index values
-        public int y;
-        
-        public Transform transform;
     }
 }
