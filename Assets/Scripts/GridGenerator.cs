@@ -167,6 +167,23 @@ public class GridGenerator : MonoBehaviour
 
     void CheckXPattern()
     {
-        //TODO remove X
+        for (int i = 0; i < cellCount; i++)
+        {
+            var x = XPrefabList.Where(a => a.x == i);
+            var y = XPrefabList.Where(a => a.y == i);
+            
+            var Listx = x.ToList();
+            var Listy = y.ToList();
+
+            if (Listx.Count > 2)
+            {
+                Debug.Log("ClearX");
+            
+            }
+            if (Listy.Count > 2)
+            {
+                Debug.Log("ClearY");
+            }
+        }
     }
 }
