@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine; 
 
 public class GridGenerator : MonoBehaviour 
@@ -14,7 +12,6 @@ public class GridGenerator : MonoBehaviour
     [SerializeField] private Transform gridPrefab; //one grid object prefab
     
     [SerializeField] private List<GridPrefab> gridPrefabList = new List<GridPrefab>(); //all created grids
-   
     [SerializeField] private List<XPrefab> XPrefabList = new List<XPrefab>(); //all created x objects
 
     [SerializeField] private Vector2 clickedArea;
@@ -43,6 +40,7 @@ public class GridGenerator : MonoBehaviour
         cam = Camera.main; //set camera
  
         CreateGrid(); // create grid at start
+        //TODO for instantiate and destroy, pool system should use
         CreateXObject();  //X prefab reference at start
     }
 
@@ -52,11 +50,11 @@ public class GridGenerator : MonoBehaviour
         {
             tmpCellCount = cellCount;
 
-            ClearGrid();
+            ClearGrid(); //remove old grid before creating new one
             CreateGrid();
         }
 
-        if (Input.GetMouseButtonDown(0)) //creen tapped
+        if (Input.GetMouseButtonDown(0)) //screen tapped
         {
             Debug.Log("GetMouseButtonDown");
 
@@ -75,7 +73,6 @@ public class GridGenerator : MonoBehaviour
                 XPrefabList.Add(tempXPrefab);
                 
                 CreateXObject();
-                
                 CheckXPattern(); //check in each tap
             }
         }
@@ -87,11 +84,11 @@ public class GridGenerator : MonoBehaviour
     void OnGUI()
     {
         point = new Vector3();
-        Event   currentEvent = Event.current;
-        Vector2 mousePos = new Vector2();
+        Event currentEvent = Event.current;
+        Vector2 mousePos = new Vector2(); //current point in tap
  
-        mousePos.x = currentEvent.mousePosition.x;
-        mousePos.y = cam.pixelHeight - currentEvent.mousePosition.y;
+        mousePos.x = currentEvent.mousePosition.x; //get x position
+        mousePos.y = cam.pixelHeight - currentEvent.mousePosition.y; //get y from x
 
         point = cam.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, cam.nearClipPlane));
 
@@ -108,8 +105,9 @@ public class GridGenerator : MonoBehaviour
     void CreateXObject()
     { 
         tempxPrefab = GameObject.Instantiate(GameManager.Instance.xPrefab);
+        
         //TODO scale and responsiveness 
-        //tempxPrefab.transform.localScale ...
+        //tempxPrefab.transform.localScale = new Vector3( CalculateScreenSize(cellCount),CalculateScreenSize(cellCount),1);
     }
 
     void ClearGrid()
@@ -134,21 +132,20 @@ public class GridGenerator : MonoBehaviour
                 var tmpPrefab = GameObject.Instantiate(gridPrefab);  
                
                 //TODO scale of cells and responsiveness
-                //tempPrefab.transform.localScale ...
- 
+                //tmpPrefab.transform.localScale = new Vector3( CalculateScreenSize(cellCount),CalculateScreenSize(cellCount),1);
+
                 point = cam.ScreenToWorldPoint(new Vector3( ((i + .5f) * cam.pixelWidth/cellCount),  (j + .5f ) * cam.pixelHeight/cellCount, cam.nearClipPlane));
                 
-                //get world position of cells from screen posiiton, set position according to this
+                //get world position of cells from screen position, set position according to this
 
                 tmpPrefab.transform.position = new Vector3( point.x ,point.y,cam.nearClipPlane+1f);
 
-                tempGridPrefab.transform = tmpPrefab; //set posiiton of cell from temp prefab
+                tempGridPrefab.transform = tmpPrefab; //set position of cell from temp prefab
                
                 tempGridPrefab.x = i;   //assign each objects index value
                 tempGridPrefab.y = j;
                 
                 gridPrefabList.Add(tempGridPrefab);  //add to grid prefabs list
-                 
             }
         } 
     }
@@ -164,7 +161,7 @@ public class GridGenerator : MonoBehaviour
             return (cam.pixelWidth / (cellCount*1f));  //return each cell size to set transforms
         }
     }
-
+    
     void CheckXPattern()
     {
         for (int i = 0; i < cellCount; i++)
@@ -178,12 +175,26 @@ public class GridGenerator : MonoBehaviour
             if (Listx.Count > 2)
             {
                 Debug.Log("ClearX");
-            
+
+                foreach (var gridPrefab in XPrefabList)
+                {
+                    Destroy(gridPrefab.transform.gameObject);
+                }
+                XPrefabList.Clear();
             }
+            
             if (Listy.Count > 2)
             {
                 Debug.Log("ClearY");
+                
+                foreach (var gridPrefab in XPrefabList)
+                {
+                    Destroy(gridPrefab.transform.gameObject);
+                }
+                XPrefabList.Clear();
             }
+
+            //TODO if x's in the different coordinates but 3 of them are collateral
         }
     }
 }
